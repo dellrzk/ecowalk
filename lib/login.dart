@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'daftar.dart';
 import 'lupa_sandi.dart';
@@ -29,22 +30,74 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  // =====================================
+  // FUNGSI LOGIN
+  // =====================================
+  void prosesLogin() {
+    String username = usernameController.text.trim();
+    String password = passwordController.text;
+
+    // Memeriksa apakah kolom kosong
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Nama pengguna dan kata sandi wajib diisi!',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Username dan password untuk simulasi login
+    if (username == 'user1122' && password == '123456') {
+      // Jika benar, pindah ke halaman Profil
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ProfilPage(),
+        ),
+      );
+    } else {
+      // Jika username atau password salah
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Nama pengguna atau kata sandi salah!',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  // =====================================
+  // TAMPILAN HALAMAN LOGIN
+  // =====================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
 
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior:
+              ScrollViewKeyboardDismissBehavior.onDrag,
+
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+
             child: Column(
               children: [
                 const SizedBox(height: 60),
 
-                // =========================
+                // =====================================
                 // JUDUL MASUK
-                // =========================
+                // =====================================
                 const Text(
                   'MASUK',
                   style: TextStyle(
@@ -56,9 +109,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 14),
 
-                // =========================
-                // LOGO ECOWALK HIJAU
-                // =========================
+                // =====================================
+                // LOGO ECOWALK
+                // =====================================
                 Image.asset(
                   'lib/images/logo2.png',
                   width: 235,
@@ -66,11 +119,11 @@ class _LoginPageState extends State<LoginPage> {
                   fit: BoxFit.contain,
                 ),
 
-                const SizedBox(height: 65),
+                const SizedBox(height: 66),
 
-                // =========================
+                // =====================================
                 // NAMA PENGGUNA
-                // =========================
+                // =====================================
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -88,6 +141,8 @@ class _LoginPageState extends State<LoginPage> {
                   height: 48,
                   child: TextField(
                     controller: usernameController,
+                    textInputAction: TextInputAction.next,
+
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color(0xFFF8F8F8),
@@ -96,6 +151,11 @@ class _LoginPageState extends State<LoginPage> {
                         Icons.person,
                         color: Colors.grey,
                         size: 20,
+                      ),
+
+                      contentPadding:
+                          const EdgeInsets.symmetric(
+                        vertical: 14,
                       ),
 
                       enabledBorder: OutlineInputBorder(
@@ -118,9 +178,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 20),
 
-                // =========================
+                // =====================================
                 // KATA SANDI
-                // =========================
+                // =====================================
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -139,6 +199,9 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     controller: passwordController,
                     obscureText: hidePassword,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => prosesLogin(),
+
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: const Color(0xFFF8F8F8),
@@ -149,12 +212,14 @@ class _LoginPageState extends State<LoginPage> {
                         size: 20,
                       ),
 
+                      // Tombol mata
                       suffixIcon: IconButton(
                         onPressed: () {
                           setState(() {
                             hidePassword = !hidePassword;
                           });
                         },
+
                         icon: Icon(
                           hidePassword
                               ? Icons.visibility_off
@@ -162,6 +227,11 @@ class _LoginPageState extends State<LoginPage> {
                           color: Colors.grey,
                           size: 20,
                         ),
+                      ),
+
+                      contentPadding:
+                          const EdgeInsets.symmetric(
+                        vertical: 14,
                       ),
 
                       enabledBorder: OutlineInputBorder(
@@ -184,46 +254,35 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 55),
 
-                // =========================
+                // =====================================
                 // TOMBOL MASUK
-                // =========================
+                // =====================================
                 SizedBox(
                   width: double.infinity,
                   height: 45,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (usernameController.text.trim().isEmpty ||
-                          passwordController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Isi nama pengguna dan kata sandi terlebih dahulu',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
 
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfilPage(),
-                        ),
-                      );
-                    },
+                  child: ElevatedButton(
+                    onPressed: prosesLogin,
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: greenColor,
                       foregroundColor: Colors.white,
                       elevation: 0,
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.center,
+
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
                     ),
+
                     child: const Text(
                       'MASUK',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -231,18 +290,20 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 20),
 
-                // =========================
+                // =====================================
                 // LUPA KATA SANDI
-                // =========================
+                // =====================================
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LupaSandiPage(),
+                        builder: (context) =>
+                            const LupaSandiPage(),
                       ),
                     );
                   },
+
                   child: const Text(
                     'Lupa Kata Sandi?',
                     style: TextStyle(
@@ -255,9 +316,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 40),
 
-                // =========================
+                // =====================================
                 // GARIS ATAU
-                // =========================
+                // =====================================
                 const Row(
                   children: [
                     Expanded(
@@ -271,6 +332,7 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.symmetric(
                         horizontal: 25,
                       ),
+
                       child: Text(
                         'Atau',
                         style: TextStyle(
@@ -291,25 +353,36 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 40),
 
-                // =========================
+                // =====================================
                 // TOMBOL GOOGLE
-                // =========================
+                // =====================================
                 SizedBox(
                   width: double.infinity,
                   height: 48,
+
                   child: ElevatedButton(
                     onPressed: () {
-                      // Login Google nanti di sini
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Login Google belum tersedia',
+                          ),
+                        ),
+                      );
                     },
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       elevation: 3,
                       shadowColor: Colors.black38,
+
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
                     ),
+
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -337,9 +410,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 const SizedBox(height: 42),
 
-                // =========================
-                // DAFTAR
-                // =========================
+                // =====================================
+                // BELUM PUNYA AKUN? DAFTAR
+                // =====================================
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -353,14 +426,15 @@ class _LoginPageState extends State<LoginPage> {
 
                     GestureDetector(
                       onTap: () {
-                       Navigator.push(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DaftarPage(),
+                            builder: (context) =>
+                                const DaftarPage(),
                           ),
                         );
-
                       },
+
                       child: const Text(
                         'Daftar disini',
                         style: TextStyle(
